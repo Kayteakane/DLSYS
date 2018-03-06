@@ -1,0 +1,946 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Denel Land Systems | Timesheets</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
+
+    <style>
+        #customers {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers td.wkday {
+            text-align: center;
+            height: 15px;
+        }
+            /**#customers tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }*/
+            /** #customers tr.entry:hover {
+        background-color: #ddd;
+    }*/
+
+        #customers th.main_headers {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            background-color: #136161;
+            color: white;
+        }
+
+        #customers th.subtotals {
+            padding-top: 6px;
+            padding-bottom: 6px;
+            text-align: center;
+            background-color: #D3D3D3;
+            color: black;
+        }
+
+        #customers th.totals {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            text-align: center;
+            background-color: #A9A9A9;
+            color: black;
+        }
+
+        #customers th.std {
+            padding-top: 3px;
+            padding-bottom: 3px;
+            text-align: center;
+        }
+
+        #customers tr.entry {
+            height: 15px;
+        }
+
+        .wkday {
+            width: 35px;
+        }
+
+        select {
+            width: 100%;
+            height: 100%;
+        }
+
+        h3 {
+            background: #136161;
+            color: white;
+            border: 1px solid black;
+            text-align: center;
+            padding: 10px;
+        }
+
+        footer {
+            margin: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        #notice {
+            border: 2px solid red;
+            width: 400px;
+            padding: 5px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        p.note {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div style="margin:10px;" id="table" class="table-editable">
+        <div class="denel_heading" style="height:100px; width : 100%;">
+            <a class="icons"><img src="Images/denel_logo.png"></a>
+            <a class="icons"><img src="Images/denel_line.png"></a>
+            <a class="icons" style="color:#2C40CE; font-weight:bold;">DENEL LAND SYSTEMS</a>
+        </div>
+
+        <!--ADD STATUS-->
+
+        <h3>WEEKLY TIME SHEET</h3>
+
+        <div class="employee_details" style="margin-top: 20px;height:50px;">
+            <label for="employee_name">EMPLOYEE NAME:</label>
+            <input readonly type="text" name="emp_name" id="emp_name" value="Katekani VA Hlungwani" style="margin-right:30px;text-align:center;font-weight:bold;width:400px;">
+
+            <label for="emp_num">EMPLOYEE NUMBER:</label>
+            <input readonly type="text" name="emp_num" id="emp_num" value="2256606" style="margin-right:30px;text-align:center;font-weight:bold;width:100px;">
+
+            <label for="cc">COST CENTER:</label>
+            <input readonly type="text" name="cc" id="cc" value="626" style="margin-right:30px;text-align:center;font-weight:bold;width:50px;">
+
+            <label for="week_num">WEEK:</label>
+            <input readonly type="text" name="week_num" id="week_num" value="" style="text-align:center;font-weight:bold;width:200px;">
+
+            <!--<label for="submit_date">SUBMISSION DATE:</label>
+        <input readonly type="text" name="submit_date" id="entry_date" value="" style="margin-right:30px;text-align:center;font-weight:bold;width:150px;">-->
+        </div>
+
+        <div style="margin:20px; " class="week-picker"></div>
+
+        <table id="customers" class="table">
+            <tr>
+                <th class="main_headers" style="width:10px;">No.</th>
+                <th class="main_headers" style="width:200px;">PROJECT</th>
+                <th class="main_headers" style="width:150px;">VARIANT</th>
+                <th class="main_headers" style="width:50px;">NODE</th>
+                <th class="main_headers" style="width:250px;">TASK</th>
+                <th class="wkday main_headers">MON</th>
+                <th class="wkday main_headers">TUE</th>
+                <th class="wkday main_headers">WED</th>
+                <th class="wkday main_headers">THU</th>
+                <th class="wkday main_headers">FRI</th>
+                <th class="wkday main_headers">SAT</th>
+                <th class="wkday main_headers">SUN</th>
+                <th class="wkday main_headers">TOTAL</th>
+                <th class="main_headers" style="width:300px;">REMARKS</th>
+                <th class="main_headers" style="width:15px;"></th>
+            </tr>
+
+            <!--<tr class="entry d_hours">
+            <td style="width:10px;">1.</td>
+            <td style="width:200px;">getProjects()</td>
+            <td style="width:150px;"></td>
+            <td style="width:50px;"></td>
+            <td style="width:250px;" contenteditable="true"></td>
+            <td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>
+            <td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>
+            <td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>
+            <td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>
+            <td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>
+            <td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>
+            <td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>
+            <td class="wkday" style="font-weight:bold;"></td>
+            <td style="width:300px;" contenteditable="true"></td>
+            <td style="width:15px;"></td>
+        </tr>-->
+
+            <tr id="direct_subtotals">
+                <th class="subtotals" colspan="5" style="border: 0;font-weight:bold;">
+                    <button disabled type="button" id="table-add" class="btn btn-default btn-sm" onclick="addNewRow()" style="outline:none;float:left;">
+                        <span class=" glyphicon glyphicon-plus"></span> New Row
+                    </button>
+                </th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="2" style="border: 0;"></th>
+            </tr>
+            <!-- <td>
+                <span class="table-up glyphicon glyphicon-arrow-up"></span>
+                <span class="table-down glyphicon glyphicon-arrow-down"></span>
+            </td>
+        </tr>-->
+
+            <tr>
+                <th class="main_headers" colspan="1">No.</th>
+                <th class="main_headers" colspan="15">INDIRECT HOURS</th>
+            </tr>
+
+            <tr id="indirect_subtotals">
+                <th class="subtotals" colspan="5" style="border: 0;font-weight:bold;"></th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="1" style="border: 0;font-weight:bold;">0</th>
+                <th class="subtotals" colspan="2" style="border: 0;"></th>
+            </tr>
+
+            <tr id="total_hours">
+                <th class="totals" colspan="5" style="border: 0; font-weight:bold;">TOTAL DIRECT AND INDIRECT HOURS FOR THE WEEK</th>
+                <th class="totals" colspan="1" style="border: 0; font-weight:bold;">0</th>
+                <th class="totals" colspan="1" style="border: 0; font-weight:bold;">0</th>
+                <th class="totals" colspan="1" style="border: 0; font-weight:bold;">0</th>
+                <th class="totals" colspan="1" style="border: 0; font-weight:bold;">0</th>
+                <th class="totals" colspan="1" style="border: 0; font-weight:bold;">0</th>
+                <th class="totals" colspan="1" style="border: 0; font-weight:bold;">0</th>
+                <th class="totals" colspan="1" style="border: 0; font-weight:bold;">0</th>
+                <th class="totals" colspan="1" style="border: 0; font-weight:bold;">0</th>
+                <th class="totals" colspan="2" style="border: 0;"></th>
+            </tr>
+
+            <tr>
+                <th class="std" colspan="5" style="border: 0; color:red; font-weight:bold;">STANDARD HOURS</th>
+                <th class="std" colspan="1" style="border: 0; color:red; font-weight:bold;">8</th>
+                <th class="std" colspan="1" style="border: 0; color:red; font-weight:bold;">8</th>
+                <th class="std" colspan="1" style="border: 0; color:red; font-weight:bold;">8</th>
+                <th class="std" colspan="1" style="border: 0; color:red; font-weight:bold;">8</th>
+                <th class="std" colspan="1" style="border: 0; color:red; font-weight:bold;">8</th>
+                <th class="std" colspan="1" style="border: 0; color:red; font-weight:bold;">0</th>
+                <th class="std" colspan="1" style="border: 0; color:red; font-weight:bold;">0</th>
+                <th class="std" colspan="1" style="border: 0; color:red; font-weight:bold;">40</th>
+                <th class="std" colspan="2" style="border: 0;"></th>
+            </tr>
+
+        </table>
+
+        <button onclick="saveHours()" type="button" id="save" class="btn btn-md">
+            <span class=" glyphicon glyphicon-floppy-disk"></span> Save
+        </button>
+
+        <button type="button" id="submit" class="btn btn-md">
+            <span class=" glyphicon glyphicon-send"></span> Submit
+        </button>
+    </div>
+
+    <div id="notice">
+        <p class="note"><strong>NOTE: </strong>Please contact Lesego Maboya at X3412 or IT at X3000 for any queries or addition of the Project, Variant, Node to the time sheet.</p>
+    </div>
+
+
+    <footer>
+        <p>&copy; 2015 Denel Land Systems. All Rights Reserved.<p>
+        <p>Privacy Policy | Terms of Use | Feeds <p>
+    </footer>
+
+    <!--<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
+
+    <script>
+        var projects = new Array("T5 Development", "TOPSTAR Development", "G6-486 Development", "H45 Upgrade Proposal", "G6-460 Upgrade Proposal", "Hoefyster", "WMS-2 Upgrade", "Other");
+        var variants = {};
+        variants[1] = new Array("GV", "SAV", "FVV", "PV", "YV");
+        variants[2] = new Array("FDFDV", "ASV");
+        variants[3] = new Array("SV", "FV", "EV", "KV", "EV", "OV", "PLV", "WV", "EV", "REV", "TRV");
+        variants[6] = new Array("FGV", "BVV", "FV", "RV");
+        var no_variants = "No Variants Available";
+
+        $(document).ready(function () {
+            //get entry date
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: 'api/ViewFunctions/getDateNow',
+                data: {},
+                success: function (Data) {
+                    $('#entry_date').val(Data);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                }
+            });
+
+            $(".ui-datepicker-trigger").mouseover(function () {
+                $(this).css('cursor', 'pointer');
+            });
+
+        });
+
+
+
+
+        $(function () {
+            var startDate;
+            var endDate;
+
+            var selectCurrentWeek = function () {
+                window.setTimeout(function () {
+                    $('.week-picker').find('.ui-datepicker-current-day a').addClass('ui-state-active')
+                }, 1);
+            }
+
+            $('#week_num').datepicker({
+                showOn: 'both',
+                buttonText: 'Show Date',
+                buttonImageOnly: true,
+                buttonImage: 'http://jqueryui.com/resources/demos/datepicker/images/calendar.gif',
+                maxDate: 'today',
+                dateFormat: 'dd/mm/yy',//check change
+                firstDay: 1,
+                showWeek: true,
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                rangeSelect: true,
+                //renderer: $.datepicker.weekOfYearRenderer,
+                onSelect: function (dateText, inst) {
+                    var date = $(this).datepicker('getDate');
+                    startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
+                    endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 7);
+                    var dateFormat = inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
+                    //$('#startDate').text($.datepicker.formatDate(dateFormat, startDate, inst.settings));
+                    //$('#endDate').text($.datepicker.formatDate(dateFormat, endDate, inst.settings));
+                    var week_num = $.datepicker.iso8601Week(date);
+
+                    var week = week_num + " (" + $.datepicker.formatDate(dateFormat, startDate, inst.settings) +
+                        " - " + $.datepicker.formatDate(dateFormat, endDate, inst.settings) + ")";
+
+                    $('#week_num').val(week);
+                    getAssociated("2256606", week_num);
+
+                    selectCurrentWeek();
+                },
+                beforeShowDay: function (date) {
+                    var cssClass = '';
+                    if (date >= startDate && date <= endDate)
+                        cssClass = 'ui-datepicker-current-day';
+                    return [true, cssClass];
+                },
+                onChangeMonthYear: function (year, month, inst) {
+                    selectCurrentWeek();
+                }
+            });
+
+            //  $('.week-picker .ui-datepicker-calendar tr').live('mousemove', function () { $(this).find('td a').addClass('ui-state-hover'); });
+            //$('.week-picker .ui-datepicker-calendar tr').live('mouseleave', function () { $(this).find('td a').removeClass('ui-state-hover'); });
+
+        });
+
+        //update totals in table
+        function direct_hours(element, event, isDirectHours) {
+
+            var col = $(element).parent().children().index($(element));
+            var row = $(element).parent().parent().children().index($(element).parent());
+
+            var offset = -1;
+            if (!isDirectHours) {
+                offset = 2;
+                //calculate total in row
+                total_per_row(row, offset);
+            } else {
+                offset = 4;
+                //calculate total in row
+                total_per_row(row, 0);
+            }
+
+            //calculate total in row
+            var total_per_col = total_per_column(col, 0, isDirectHours);
+
+            //set total hours per column
+            if (isDirectHours) {
+                document.getElementById("customers").rows.namedItem("direct_subtotals").cells[col - offset].innerHTML = Math.round(total_per_col * 100) / 100;
+                total_element = document.getElementById("direct_subtotals");
+                total_per_row($(total_element)[0].rowIndex, 4);
+            } else if (!isDirectHours) {
+                document.getElementById("customers").rows.namedItem("indirect_subtotals").cells[col - offset].innerHTML = Math.round(total_per_col * 100) / 100;
+                total_element = document.getElementById("indirect_subtotals");
+                total_per_row($(total_element)[0].rowIndex, 4);
+            }
+
+            var i_total = document.getElementById("customers").rows.namedItem("indirect_subtotals").cells[col - offset].innerHTML;
+            var d_total = document.getElementById("customers").rows.namedItem("direct_subtotals").cells[col - offset].innerHTML;
+            if (isNaN(i_total) || i_total == '') {
+                i_total = 0;
+            }
+
+            if (isNaN(d_total) || d_total == '') {
+                d_total = 0;
+            }
+
+            var total = parseFloat(i_total) + parseFloat(d_total);
+            //set total
+            document.getElementById("customers").rows.namedItem("total_hours").cells[col - offset].innerHTML = Math.round(total * 100) / 100;
+            total_element = document.getElementById("total_hours");
+            total_per_row($(total_element)[0].rowIndex, 4);
+
+
+            if (isNaN(element.textContent) || (parseInt(element.textContent) > 24 || parseInt(element.textContent) < 0)) {
+                $(element).css("background-color", "red");
+            } else {
+                $(element).css("background-color", "transparent");
+                //$(element).innerHTML = Math.round(parseFloat(element.textContent) * 100) / 100;
+            }
+        }
+
+        //calculate total per column
+        function total_per_column(col, offset, isDirectHours) {
+            var class_name = null;
+            if (isDirectHours) {
+                class_name = "d_hours";
+            } else {
+                class_name = "i_hours";
+            }
+
+            var total_per_col = 0.00;
+
+            //calculate total hours for the column
+            table = $("#customers");
+            table.find('tr').each(function (i, el) {
+                if (this.classList.contains(class_name)) {
+                    var $tds = $(this).find('td'),
+                        val = $tds.eq(col - offset).text();
+                    if (!isNaN(val) && val != '') {
+                        total_per_col = total_per_col + parseFloat(val);
+                    }
+                }
+            });
+
+            return total_per_col;
+        }
+
+        //calculate total per row
+        function total_per_row(row, offset) {
+            var total_per_task = 0.00;
+
+            //calculate total hours for the row MON - SUN
+            $('#customers tr').eq(row).children().each(function () {
+                var upper = 11 - offset;
+                var lower = 5 - offset;
+                var element_col = $(this).parent().children().index($(this));
+                if (element_col >= lower && element_col <= upper) {
+                    if (!isNaN(this.textContent) && this.textContent != '') {
+                        total_per_task = total_per_task + parseFloat(this.textContent);
+                    }
+                }
+            });
+
+            document.getElementById("customers").rows[row].cells[12 - offset].innerHTML = Math.round(total_per_task * 100) / 100;
+        }
+
+        //add direct rows for new entries
+        function addNewRow() {
+            var i = total_element = $(document.getElementById("direct_subtotals"))[0].rowIndex;
+
+            var html = '<tr class="entry d_hours">' +
+                '<td style="width:10px;">' + i + '.</td>' +
+                '<td style="width:200px;">' + getProjects(projects) + '</td > ' +
+                '<td style="width:150px;"></td>' +
+                '<td style="width:50px;"></td>' +
+                '<td style="width:250px;" contenteditable="true"></td>' +
+                '<td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>' +
+                '<td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>' +
+                '<td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>' +
+                '<td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>' +
+                '<td class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>' +
+                '<td style="background-color: #D3D3D3;" class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>' +
+                '<td style="background-color: #D3D3D3;" class="wkday" contenteditable="true" onkeyup="javascript:direct_hours(this,event, true);"></td>' +
+                '<td class="wkday" style="font-weight:bold;"></td>' +
+                '<td style="width:300px;" contenteditable="true"></td>' +
+                '<td style="width:15px;">' +
+                '<span class="table-remove glyphicon glyphicon-remove" onclick="deleteRow(this)"></span>' +
+                '</td>'
+            '</tr>';
+
+
+            var i = total_element = $(document.getElementById("direct_subtotals"))[0].rowIndex;
+            $('#customers > tbody > tr').eq(i - 1).after(html);
+            //var row = document.getElementById("customers").insertRow(i);
+
+            $('#table-add').prop("selected", false); 
+        }
+
+        //add indirect rows for new entries
+        function addIndirectRow(index, text) {
+            var html = '<tr class="entry i_hours">' +
+                '<td style="width:10px;">' + index + '.</td>' +
+                '<td colspan= "3" style= "width:200px;">' + text + '</td > ' +
+                '<td style= "width:250px;" contenteditable= "true" ></td > ' +
+                '<td class="wkday" contenteditable= "true" onkeyup= "javascript:direct_hours(this,event, false);" ></td > ' +
+                '<td class="wkday" contenteditable= "true" onkeyup= "javascript:direct_hours(this,event, false);" ></td > ' +
+                '<td class="wkday" contenteditable= "true" onkeyup= "javascript:direct_hours(this,event, false);" ></td > ' +
+                '<td class="wkday" contenteditable= "true" onkeyup= "javascript:direct_hours(this,event, false);" ></td > ' +
+                '<td class="wkday" contenteditable= "true" onkeyup= "javascript:direct_hours(this,event, false);" ></td > ' +
+                '<td style="background-color: #D3D3D3;" class="wkday" contenteditable= "true" onkeyup= "javascript:direct_hours(this,event, false);" ></td > ' +
+                '<td style="background-color: #D3D3D3;" class="wkday" contenteditable= "true" onkeyup= "javascript:direct_hours(this,event, false);" ></td > ' +
+                '<td class="wkday" ></td > ' +
+                '<td colspan= "2" style= "width:300px;" ></td > ' +
+                '</tr>';
+
+            var i = total_element = $(document.getElementById("indirect_subtotals"))[0].rowIndex;
+            $('#customers > tbody > tr').eq(i - 1).after(html);
+        }
+
+        //delete row
+        function deleteRow(element) {
+            var index = element.parentNode.parentNode.rowIndex;
+            document.getElementById("customers").deleteRow(index);
+            refreshNumbers();
+        }
+
+        //refresh indexes after row is delted
+        function refreshNumbers() {
+            //loop and replace numbers
+            //calculate total hours for the column
+            index = 0;
+            table = $("#customers");
+            table.find('tr').each(function (i, el) {
+                if (this.classList.contains("d_hours")) {
+                    var $tds = $(this).find('td'),
+                        val = $tds.eq(0).text();
+                    $tds.eq(0).textContent = index + ".";
+                    index++;
+                }
+            });
+        }
+
+        //get projects available for hours
+        function getProjects() {
+            var options = "";
+            var i = 0;
+            for (i = 0; i < projects.length; i++) {
+                options = options + '<option id="' + i + 1 + '" value="' + projects[i] + '">' + projects[i] + '</option>';
+            }
+
+            return '<select id="projects" onchange="getVariants(this)"><option id="-1" value="0">--SELECT PROJECT--</option>' + options + '</select>';
+        }
+
+        //get variants from projects
+        function getVariants(element) {
+
+            var index = $(element).parent().parent()[0].rowIndex;
+
+            //console.log(element.value);
+
+            var html = "";
+            if (element.selectedIndex in variants) {
+                var options = "";
+                var i = 0;
+                for (i = 0; i < variants[element.selectedIndex].length; i++) {
+                    options = options + '<option id="' + i + 1 + '" value="' + variants[element.selectedIndex][i] + '">' + variants[element.selectedIndex][i] + '</option>';
+                }
+
+                html = '<select id="variants" onchange="getNode(' + index + ', ' + index + ')"><option id="-1" value="0">--SELECT NODE--</option>' + options + '</select>';
+
+
+            } else {
+                html = no_variants;
+                getNode(index, index);
+            }
+
+            document.getElementById("customers").rows[index].cells[2].innerHTML = html;
+        }
+
+        //get node from projects or variants number
+        function getNode(index, value) {
+            //console.log(value);
+            document.getElementById("customers").rows[index].cells[3].innerHTML = value;
+        }
+
+        //save entered hours to database
+        function saveHours() {
+
+            var arr = {};
+            arr["indirect"] = {};
+            arr["direct"] = {};
+            var icount = 0;
+            //save indirect hours
+            $('#customers tr').each(function (i, row) {
+                var days = {};
+                if (this.classList.contains("i_hours")) {
+
+                    $(this).find('td').each(function () {
+                        var upper = 9;
+                        var lower = 3;
+                        var element_col = $(this).parent().children().index($(this));
+                        if (element_col >= lower && element_col <= upper) {
+                            if (!isNaN(this.textContent) && this.textContent != '') {
+                                days[getDay(element_col + 2, 0)] = this.textContent;
+                            } else {
+                                days[getDay(element_col + 2, 0)] = 0;
+                            }
+                        } else {
+                            switch (element_col) {
+                                case 0:
+                                    //days = days + "'Index'" + ": " + "'" + this.textContent + "'" + ", ";
+                                    break;
+                                case 1:
+                                    days["indirect_task"] = this.textContent;
+                                    break;
+                                case 2:
+                                    days["task"] = this.textContent;
+                                    break;
+                                case 11:
+                                    days["remarks"] = this.textContent;
+                                    break;
+                            }
+                        }
+                    });
+                    if (isValidRow(days, false)) {
+                        arr["indirect"][icount] = days;
+                        icount++;
+                    }
+                }
+
+            });
+
+            //save direct hours
+            icount = 0;
+            $('#customers tr').each(function (i, row) {
+                var days = {};
+                if (this.classList.contains("d_hours")) {
+
+                    $(this).find('td').each(function () {
+                        var upper = 11;
+                        var lower = 5;
+                        var element_col = $(this).parent().children().index($(this));
+                        if (element_col >= lower && element_col <= upper) {
+                            if (!isNaN(this.textContent) && this.textContent != '') {
+                                var caption = getDay(element_col, 0);
+                                days[caption] = this.textContent;
+                            } else {
+                                days[getDay(element_col, 0)] = 0;
+                            }
+                        } else {
+                            switch (element_col) {
+                                case 0:
+                                    //days[] = days + "Index" + ": " + this.textContent + ", ";
+                                    break;
+                                case 1:
+                                    if ($(this).children()[0].selectedIndex != 0) {
+                                        days["project"] = $(this).children()[0].value;
+                                    } else {
+                                        days["project"] = "";
+                                    }
+                                    break;
+                                case 2:
+                                    var _find = $(this).find("select");
+
+                                    if (_find[0] === undefined) {
+                                        days["variant"] = this.textContent;
+                                        //console.log(this.textContent);
+                                    } else {
+                                        if ($(this).children()[0].selectedIndex != 0) {
+                                            days["variant"] = $(this).children()[0].value;
+                                            //console.log("Empty");
+                                        } else {
+                                            days["variant"] = "";
+                                            //console.log("Showing");
+                                        }
+                                    }
+
+                                    break;
+                                case 3:
+                                    days["node"] = this.textContent;
+                                    break;
+                                case 4:
+                                    days["task"] = this.textContent;
+                                    break;
+                                case 13:
+                                    days["remarks"] = this.textContent;
+                                    break;
+                            }
+                        }
+                    });
+
+                    if (isValidRow(days, true)) {
+                        arr["direct"][icount] = days;
+                        icount++;
+                    }
+                }
+            });
+
+            console.log(arr);
+            console.log(JSON.stringify(arr));
+        }
+
+        //get day of the week from column value
+        function getDay(num, offset) {
+            //var col_no = 5 - offset;
+            switch (num) {
+                case 5:
+                    return "mon";
+                    break;
+                case 6:
+                    return "tue";
+                    break;
+                case 7:
+                    return "wed";
+                    break;
+                case 8:
+                    return "thu";
+                    break;
+                case 9:
+                    return "fri";
+                    break;
+                case 10:
+                    return "sat";
+                    break;
+                case 11:
+                    return "sun";
+                    break;
+
+            }
+
+            return "";
+        }
+
+        //add check if task has valid row data
+        function isValidRow(row, isDirectHours) {
+            if (isDirectHours) {
+                if (row["project"] == "") {
+                    return false;
+                } else if (row["mon"] == 0 && row["tue"] == 0 && row["wed"] == 0 && row["thu"] == 0 && row["fri"] == 0 && row["sat"] == 0 && row["sun"] == 0) {
+                    return false;
+                } else if (row["node"] == "") {
+                    return false;
+                } else if (row["variant"] == "") {
+                    return false; //selecting variant
+                } else if (row["project"] == "Other" && (row["remarks"] == "" || row["task"] == "")) {
+                    return false;
+                }
+
+                //check if there are nodes
+                //check if there are variants
+                //if other is selected check if there is a task or a remark
+
+            } else {
+                if (row["mon"] == 0 && row["tue"] == 0 && row["wed"] == 0 && row["thu"] == 0 && row["fri"] == 0 && row["sat"] == 0 && row["sun"] == 0) {
+                    return false;
+                } else if (row["indirect_task"] == "Other" && (row["remarks"] == "" || row["task"] == "")) {
+                    return false;
+                }
+                //if other is selected check if there is a task or a remark
+            }
+
+            return true;
+        }
+
+        //add completed rows for indirect hours
+        function addNewCompleteIndirectRow(data) {
+            if (data == null) {
+                addIndirectRow();
+            } else {
+                index = 1;
+                for (var key in data) {
+                    var html = '<tr class="entry i_hours">' +
+                        '<td style="width:10px;">' + index + '.</td>' +
+                        '<td colspan= "3" style= "width:200px;">' + data[key].indirect_task + '</td > ' +
+                        '<td style= "width:250px;">' + data[key].task + '</td > ' +
+                        '<td class="wkday">' + data[key].mon + '</td > ' +
+                        '<td class="wkday">' + data[key].tue + '</td > ' +
+                        '<td class="wkday">' + data[key].wed + '</td > ' +
+                        '<td class="wkday">' + data[key].thu + '</td > ' +
+                        '<td class="wkday">' + data[key].fri + '</td > ' +
+                        '<td style="background-color: #D3D3D3;" class="wkday">' + data[key].sat + '</td > ' +
+                        '<td style="background-color: #D3D3D3;" class="wkday">' + data[key].sun + '</td > ' +
+                        '<td class="wkday"></td > ' +
+                        '<td colspan= "2" style= "width:300px;" >' + data[key].remarks + '</td ></tr>';
+
+                    var i = total_element = $(document.getElementById("indirect_subtotals"))[0].rowIndex;
+                    $('#customers > tbody > tr').eq(i - 1).after(html);
+                    index++;
+                    total_per_row(i, 2);
+                }
+                calculate_totals(2, false);
+                calculateTotal();
+            }
+
+        }
+
+        //add completed rows for direct hours
+        function addNewCompleteRow(data) {
+            if (data == null) {
+                var i;
+                for (i = 0; i < 5; i++) {
+                    addNewRow();
+                }
+            } else {
+                for (var key in data) {
+                    var i = total_element = $(document.getElementById("direct_subtotals"))[0].rowIndex;
+
+                    var html = '<tr class="entry d_hours">' +
+                        '<td style="width:10px;">' + i + '.</td>' +
+                        '<td style="width:200px;">' + data[key].project + '</td > ' +
+                        '<td style="width:150px;">' + data[key].variant + '</td>' +
+                        '<td style="width:50px;">' + data[key].node + '</td>' +
+                        '<td style="width:250px;">' + data[key].task + '</td>' +
+                        '<td class="wkday">' + data[key].mon + '</td>' +
+                        '<td class="wkday">' + data[key].tue + '</td>' +
+                        '<td class="wkday">' + data[key].wed + '</td>' +
+                        '<td class="wkday">' + data[key].thu + '</td>' +
+                        '<td class="wkday">' + data[key].fri + '</td>' +
+                        '<td style="background-color: #D3D3D3;" class="wkday">' + data[key].sat + '</td>' +
+                        '<td style="background-color: #D3D3D3;" class="wkday">' + data[key].sun + '</td>' +
+                        '<td class="wkday" style="font-weight:bold;"></td>' +
+                        '<td style="width:300px;">' + data[key].remarks + '</td>' +
+                        '<td style="width:15px;"></td>'
+                    '</tr>';
+
+
+                    var i = total_element = $(document.getElementById("direct_subtotals"))[0].rowIndex;
+
+                    $('#customers > tbody > tr').eq(i - 1).after(html);
+                    total_per_row(i, 0);
+                }
+                calculate_totals(0, true);
+                calculateTotal();
+            }
+        }
+
+        function calculateTotal() {
+            var col;
+            var lower = 1;
+            var upper = 7;
+
+            for (col = lower; col <= upper; col++) {
+                var i_total = document.getElementById("customers").rows.namedItem("indirect_subtotals").cells[col].innerHTML;
+                var d_total = document.getElementById("customers").rows.namedItem("direct_subtotals").cells[col].innerHTML;
+                if (isNaN(i_total) || i_total == '') {
+                    i_total = 0;
+                }
+
+                if (isNaN(d_total) || d_total == '') {
+                    d_total = 0;
+                }
+                var total = parseFloat(i_total) + parseFloat(d_total);
+                //set total
+                document.getElementById("customers").rows.namedItem("total_hours").cells[col].innerHTML = Math.round(total * 100) / 100;
+
+            }
+
+            total_element = document.getElementById("total_hours");
+            total_per_row($(total_element)[0].rowIndex, 4);
+        }
+
+        function calculate_totals(offset, isDirectHours) {
+            var col;
+            var lower = 5 - offset;
+            var upper = 11 - offset;
+            var total_element = null;
+
+            var total_per_col = 0;
+
+            for (col = lower; col <= upper; col++) {
+                total_per_col = total_per_column(col, 0, isDirectHours);
+                if (isDirectHours) {
+                    document.getElementById("customers").rows.namedItem("direct_subtotals").cells[col - 4].innerHTML = Math.round(total_per_col * 100) / 100;
+                } else if (!isDirectHours) {
+                    document.getElementById("customers").rows.namedItem("indirect_subtotals").cells[col - 2].innerHTML = Math.round(total_per_col * 100) / 100;
+                }
+            }
+
+            if (isDirectHours) {
+                total_element = document.getElementById("direct_subtotals");
+            } else if (!isDirectHours) {
+                total_element = document.getElementById("indirect_subtotals");
+            }
+
+            total_per_row($(total_element)[0].rowIndex, 4);
+        }
+
+        //get data assiciated to week
+        function getAssociated(empl_id, week_no) {
+            $(".entry").remove();
+            //SAV
+            //REJ
+            //APR
+
+            //check status
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: 'api/ApprovalStatus/getWeekStatus',
+                data: { week_num: week_no, emp_id: empl_id },
+                success: function (Data) {
+
+                    if (Data == null || Data == "") {
+                        var i;
+                        for (i = 0; i < 1; i++) {
+                            addNewRow();
+                        }
+
+                        var ih = new Array("Indirect Meetings", "Ordinary Leave", "Sick Leave", "Other Leave", "Public Holiday", "Training", "Other");
+                        var count = 1;
+                        ih.forEach(function (entry) {
+                            addIndirectRow(count, entry);
+                            count++;
+                        });
+                        
+                        $('#table-add').prop("disabled", false); 
+                    } else {
+
+                        $('#table-add').prop("disabled", true); 
+                        if (Data.status == "APR") {
+
+                            $.ajax({
+                                type: 'GET',
+                                dataType: 'json',
+                                url: 'api/DirectHours/getAllDirectTasks',
+                                data: { week_num: week_no, emp_id: empl_id },
+                                success: function (Data) {
+                                    addNewCompleteRow(Data);
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                                }
+                            });
+
+                            $.ajax({
+                                type: 'GET',
+                                dataType: 'json',
+                                url: 'api/IndirectHours/getAllIndirectTask',
+                                data: { week_num: week_no, emp_id: empl_id },
+                                success: function (Data) {
+
+                                    addNewCompleteIndirectRow(Data);
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                                }
+                            });
+                        }
+                    }
+                    //disable buttons
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
